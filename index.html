@@ -1,272 +1,417 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>全部账单</title>
-<style>
-  :root{
-    --bg:#ffffff;
-    --text:#111111;
-    --sub:#666a73;
-    --muted:#8c8f99;
-    --line:#ececec;
-    --accent:#ffcc00;
-    --blue:#2a6ae9;
-  }
-  
-  *{box-sizing:border-box;}
-  html,body{height:100%;}
-  body{
-    margin:0;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC","Helvetica Neue",sans-serif;
-    color:var(--text);
-    background:var(--bg);
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-  }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>全部账单</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111111;
+      --sub: #666a73;
+      --muted: #8c8f99;
+      --line: #ececec;
+      --accent: #ffcc00;
+      --blue: #2a6ae9;
+    }
 
-  .app{
-    max-width:480px;
-    margin:0 auto;
-    min-height:100%;
-    padding-bottom:20px;
-    background:#fff;
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  /* fake status bar space */
-  .safe-area{height: calc(16px + env(safe-area-inset-top));}
+    html,
+    body {
+      height: 100%;
+    }
 
-  header{
-    position:sticky; top:0;
-    background:#fff;
-    z-index:5;
-    border-bottom:0px solid var(--line);
-  }
-  .nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 16px calc(14px + env(safe-area-inset-top));
-    padding-top:14px;
-  }
-  .nav .left, .nav .right{
-    width:80px; display:flex; align-items:center; gap:6px;
-  }
-  .nav .center{ flex:1; text-align:center; font-size:16px; color:#111; font-weight:600; }
-  .icon-btn{ width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; color:#333; text-decoration:none; }
-  .icon-btn svg{width:18px; height:18px;}
-  .nav .right{ justify-content:flex-end; font-size:16px; color:#111;}
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", "Helvetica Neue", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
 
-  .hero{
-    padding:28px 22px 10px;
-    text-align:center;
-  }
-  .coin{
-    width:68px;height:68px;margin:0 auto 12px; border-radius:50%;
-    display:grid; place-items:center;
-  }
-  .coin svg{ width:36px; height:36px; color:#fff; }
-  .title{
-    font-size:18px; color:#333; line-height:1.3;
-  }
-  .amount{
-    font-size:40px; letter-spacing:1px;
-    margin:16px 0 6px; font-weight:500;
-    font-family: "Heiti SC" !important;
-  }
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100%;
+      padding-bottom: 20px;
+      background: #fff;
+    }
 
-  .section{
-    padding: 18px 20px;
-  }
-  .kv{
-    display:grid;
-    grid-template-columns: 112px 1fr;
-    row-gap:14px; column-gap:6px;
-    font-size:15px;
-  }
-  .kv .k{ color:#6b6f77; }
-  .kv .v{ color:#2a2d33; word-break:break-all; }
-  .divider{ height:10px; background:#f6f7f9; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    /* fake status bar space */
+    .safe-area {
+      height: calc(16px + env(safe-area-inset-top));
+    }
 
-  .block-title{
-    padding:14px 20px; font-size:16px; color:#2a2d33; font-weight:500;
-    display:flex; align-items:center; justify-content:space-between;
-    border-bottom:1px solid var(--line);
-  }
+    header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 5;
+      border-bottom: 0px solid var(--line);
+    }
 
-  .service-row{
-    display:flex; gap:18px; padding:14px 20px 20px; flex-wrap:wrap;
-  }
-  .service{
-    flex:1 1 calc(50% - 18px);
-    min-width:140px;
-    display:flex; align-items:center; gap:10px;
-    padding:10px 12px;
-    border-radius:12px; text-decoration:none; color:#576b95; background:#fff;
-  }
-  .service .ico{
-    width:28px; height:28px; border-radius:6px; display:grid; place-items:center; background:#f2f4f7;
-    padding-bottom:1px;
-  }
-  .service .ico svg{ width:18px; height:18px; }
-  .service .txt{ font-size:15px;}
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px calc(14px + env(safe-area-inset-top));
+      padding-top: 14px;
+    }
 
-  .list-item{
-    display:flex; align-items:center; justify-content:space-between;
-    padding: 14px 20px;
-    border-bottom:1px solid var(--line);
-    text-decoration:none; color:#576b95;
-  }
-  .list-item .left{ display:flex; align-items:center; gap:12px; }
-  .avatar{
-    width:26px; height:26px; border-radius:6px; background:#f2f4f7; display:grid; place-items:center;color:#576b95;
-    padding-bottom:1px;
-  }
-  .avatar svg{ width:16px; height:16px; }
+    .nav .left,
+    .nav .right {
+      width: 80px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-  footer{
-    text-align:center; color:#9aa0a6; font-size:13px; padding:18px 0 100px;
-    background:#efefef;
-  }
+    .nav .center {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      color: #111;
+      font-weight: 600;
+    }
 
-  @media (max-width:360px){
-    .amount{ font-size:42px; }
-    .kv{ grid-template-columns: 100px 1fr; }
-    .service{ min-width:120px; }
-  }
-</style>
+    .icon-btn {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .nav .right {
+      justify-content: flex-end;
+      font-size: 16px;
+      color: #111;
+    }
+
+    .hero {
+      padding: 28px 22px 10px;
+      text-align: center;
+    }
+
+    .coin {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    .coin svg {
+      width: 36px;
+      height: 36px;
+      color: #fff;
+    }
+
+    .title {
+      font-size: 18px;
+      color: #333;
+      line-height: 1.3;
+    }
+
+    .amount {
+      font-size: 40px;
+      letter-spacing: 1px;
+      margin: 16px 0 6px;
+      font-weight: 500;
+      font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei',
+        'Hiragino Sans GB', 'Source Han Sans SC', sans-serif;
+      font-variant-numeric: tabular-nums;
+      font-synthesis: none;
+    }
+
+    .section {
+      padding: 18px 20px;
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      row-gap: 14px;
+      column-gap: 6px;
+      font-size: 15px;
+    }
+
+    .kv .k {
+      color: #6b6f77;
+    }
+
+    .kv .v {
+      color: #2a2d33;
+      word-break: break-all;
+    }
+
+    .divider {
+      height: 10px;
+      background: #f6f7f9;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .block-title {
+      padding: 14px 20px;
+      font-size: 16px;
+      color: #2a2d33;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .service-row {
+      display: flex;
+      gap: 18px;
+      padding: 14px 20px 20px;
+      flex-wrap: wrap;
+    }
+
+    .service {
+      flex: 1 1 calc(50% - 18px);
+      min-width: 140px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #576b95;
+      background: #fff;
+    }
+
+    .service .ico {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      background: #f2f4f7;
+      padding-bottom: 1px;
+    }
+
+    .service .ico svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .service .txt {
+      font-size: 15px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      color: #576b95;
+    }
+
+    .list-item .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: #f2f4f7;
+      display: grid;
+      place-items: center;
+      color: #576b95;
+      padding-bottom: 1px;
+    }
+
+    .avatar svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    footer {
+      text-align: center;
+      color: #9aa0a6;
+      font-size: 13px;
+      padding: 18px 0 100px;
+      background: #efefef;
+    }
+
+    @media (max-width:360px) {
+      .amount {
+        font-size: 42px;
+      }
+
+      .kv {
+        grid-template-columns: 100px 1fr;
+      }
+
+      .service {
+        min-width: 120px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="app">
-  <header>
-    <div class="safe-area"></div>
-    <div class="nav">
-      <div class="left">
-        <a class="icon-btn" href="javascript:history.back()"
-           aria-label="关闭">
-          <!-- X icon -->
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
+  <div class="app">
+    <header>
+      <div class="safe-area"></div>
+      <div class="nav">
+        <div class="left">
+          <a class="icon-btn" href="javascript:history.back()" aria-label="关闭">
+            <!-- X icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </a>
+        </div>
+        <div class="center"></div>
+        <div class="right" id="manageBtn" style="cursor:pointer; color:#000000;">全部账单</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="coin" aria-hidden="true">
+          <img id="avatarImg" src="icon/avatar.jpg" alt="头像"
+            style="width:68px; height:68px; border-radius:50%; object-fit:cover;">
+        </div>
+        <div class="title" id="title">扫二维码付款-给邓昊</div>
+        <div class="amount" id="amount">-22.00</div>
+      </section>
+
+      <section class="section">
+        <div class="kv">
+          <div class="k">当前状态</div>
+          <div class="v">支付成功</div>
+          <div class="k">收款方备注</div>
+          <div class="v">二维码收款</div>
+          <div class="k">支付方式</div>
+          <div class="v" id="paymentMethod">零钱</div>
+          <div class="k">转账时间</div>
+          <div class="v" id="transferTime">2025年9月20日 17:20:43</div>
+          <div class="k">转账单号</div>
+          <div class="v" id="transferNumber">10001073012025092001807404426630</div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <div class="block-title">账单服务</div>
+      <div class="service-row">
+        <a class="service" href="#" role="button">
+          <span class="ico" aria-hidden="true">
+            <img src="icon/yiwen.png" alt="疑问图标" style="width:30px; height:30px;">
+          </span>
+          <span class="txt">对订单有疑惑</span>
+        </a>
+        <a class="service" href="#" role="button">
+          <span class="ico" aria-hidden="true">
+            <img src="icon/faqi.png" alt="发起图标" style="width:30px; height:30px;">
+          </span>
+          <span class="txt">发起群收款</span>
         </a>
       </div>
-      <div class="center"></div>
-      <div class="right" id="manageBtn" style="cursor:pointer; color:#000000;">全部账单</div>
-    </div>
-  </header>
 
-  <main>
-    <section class="hero">
-      <div class="coin" aria-hidden="true">
-        <img id="avatarImg" src="icon/avatar.jpg" alt="头像" style="width:68px; height:68px; border-radius:50%; object-fit:cover;">
-      </div>
-      <div class="title" id="title">扫二维码付款-给邓昊</div>
-      <div class="amount" id="amount">-22.00</div>
-    </section>
+      <div class="divider"></div>
 
-    <section class="section">
-      <div class="kv">
-        <div class="k">当前状态</div><div class="v">支付成功</div>
-        <div class="k">收款方备注</div><div class="v">二维码收款</div>
-        <div class="k">支付方式</div><div class="v" id="paymentMethod">零钱</div>
-        <div class="k">转账时间</div><div class="v" id="transferTime">2025年9月20日 17:20:43</div>
-        <div class="k">转账单号</div><div class="v" id="transferNumber">10001073012025092001807404426630</div>
-      </div>
-    </section>
-
-    <div class="divider"></div>
-
-    <div class="block-title">账单服务</div>
-    <div class="service-row">
-      <a class="service" href="#" role="button">
-        <span class="ico" aria-hidden="true">
-          <img src="icon/yiwen.png" alt="疑问图标" style="width:30px; height:30px;">
-        </span>
-        <span class="txt">对订单有疑惑</span>
+      <div class="block-title">收款方服务</div>
+      <a class="list-item" href="#">
+        <div class="left">
+          <span class="avatar" aria-hidden="true">
+            <img src="icon/mingpian.png" alt="名片图标" style="width:30px; height:30px;">
+          </span>
+          <span>收款方名片</span>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c0c4cc" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
       </a>
-      <a class="service" href="#" role="button">
-        <span class="ico" aria-hidden="true">
-          <img src="icon/faqi.png" alt="发起图标" style="width:30px; height:30px;">
-        </span>
-        <span class="txt">发起群收款</span>
-      </a>
-    </div>
 
-    <div class="divider"></div>
+      <footer>本服务由财付通提供</footer>
+    </main>
+  </div>
 
-    <div class="block-title">收款方服务</div>
-    <a class="list-item" href="#">
-      <div class="left">
-        <span class="avatar" aria-hidden="true">
-          <img src="icon/mingpian.png" alt="名片图标" style="width:30px; height:30px;">
-        </span>
-        <span>收款方名片</span>
-      </div>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c0c4cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="9 18 15 12 9 6"></polyline>
-      </svg>
-    </a>
-
-    <footer>本服务由财付通提供</footer>
-  </main>
-</div>
-
-<script>
-document.getElementById('manageBtn').addEventListener('click', function() {
-  // 编辑头像
-  const avatarInput = document.createElement('input');
-  avatarInput.type = 'file';
-  avatarInput.accept = 'image/*';
-  avatarInput.style.display = 'none';
-  document.body.appendChild(avatarInput);
-  avatarInput.click();
-  avatarInput.onchange = function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('avatarImg').src = e.target.result;
+  <script>
+    document.getElementById('manageBtn').addEventListener('click', function () {
+      // 编辑头像
+      const avatarInput = document.createElement('input');
+      avatarInput.type = 'file';
+      avatarInput.accept = 'image/*';
+      avatarInput.style.display = 'none';
+      document.body.appendChild(avatarInput);
+      avatarInput.click();
+      avatarInput.onchange = function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById('avatarImg').src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+        document.body.removeChild(avatarInput);
       };
-      reader.readAsDataURL(file);
-    }
-    document.body.removeChild(avatarInput);
-  };
 
-  // 编辑收款人姓名
-  const currentTitle = document.getElementById('title').textContent;
-  const newTitle = prompt('请输入新的收款人姓名:', currentTitle.replace('扫二维码付款-给', ''));
-  if (newTitle !== null && newTitle !== '') {
-    document.getElementById('title').textContent = '扫二维码付款-给' + newTitle;
-  }
+      // 编辑收款人姓名
+      const currentTitle = document.getElementById('title').textContent;
+      const newTitle = prompt('请输入新的收款人姓名:', currentTitle.replace('扫二维码付款-给', ''));
+      if (newTitle !== null && newTitle !== '') {
+        document.getElementById('title').textContent = '扫二维码付款-给' + newTitle;
+      }
 
-  // 编辑金额
-  const currentAmount = document.getElementById('amount').textContent;
-  const newAmount = prompt('请输入新的金额:', currentAmount);
-  if (newAmount !== null && newAmount !== '') {
-    document.getElementById('amount').textContent = newAmount;
-  }
+      // 编辑金额
+      const currentAmount = document.getElementById('amount').textContent;
+      const newAmount = prompt('请输入新的金额:', currentAmount);
+      if (newAmount !== null && newAmount !== '') {
+        document.getElementById('amount').textContent = newAmount;
+      }
 
-  // 编辑支付方式
-  const currentPaymentMethod = document.getElementById('paymentMethod').textContent;
-  const newPaymentMethod = prompt('请输入新的支付方式:', currentPaymentMethod);
-  if (newPaymentMethod !== null && newPaymentMethod !== '') {
-    document.getElementById('paymentMethod').textContent = newPaymentMethod;
-  }
+      // 编辑支付方式
+      const currentPaymentMethod = document.getElementById('paymentMethod').textContent;
+      const newPaymentMethod = prompt('请输入新的支付方式:', currentPaymentMethod);
+      if (newPaymentMethod !== null && newPaymentMethod !== '') {
+        document.getElementById('paymentMethod').textContent = newPaymentMethod;
+      }
 
-  // 编辑转账时间
-  const currentTransferTime = document.getElementById('transferTime').textContent;
-  const newTransferTime = prompt('请输入新的转账时间:', currentTransferTime);
-  if (newTransferTime !== null && newTransferTime !== '') {
-    document.getElementById('transferTime').textContent = newTransferTime;
-  }
+      // 编辑转账时间
+      const currentTransferTime = document.getElementById('transferTime').textContent;
+      const newTransferTime = prompt('请输入新的转账时间:', currentTransferTime);
+      if (newTransferTime !== null && newTransferTime !== '') {
+        document.getElementById('transferTime').textContent = newTransferTime;
+      }
 
-  // 编辑转账单号
-  const currentTransferNumber = document.getElementById('transferNumber').textContent;
-  const newTransferNumber = prompt('请输入新的转账单号:', currentTransferNumber);
-  if (newTransferNumber !== null && newTransferNumber !== '') {
-    document.getElementById('transferNumber').textContent = newTransferNumber;
-  }
-});
-</script>
+      // 编辑转账单号
+      const currentTransferNumber = document.getElementById('transferNumber').textContent;
+      const newTransferNumber = prompt('请输入新的转账单号:', currentTransferNumber);
+      if (newTransferNumber !== null && newTransferNumber !== '') {
+        document.getElementById('transferNumber').textContent = newTransferNumber;
+      }
+    });
+  </script>
 </body>
+
 </html>
