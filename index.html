@@ -6,6 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>全部账单</title>
   <style>
+    @font-face {
+      font-family: 'AmountDigits';
+      src: url('/fonts/AmountDigits.woff2') format('woff2');
+      font-weight: 500;
+      /* 选与你想要的粗细一致 */
+      font-style: normal;
+      font-display: swap;
+      /* 仅数字/符号范围，进一步减少其他字形误用（可选） */
+      unicode-range: U+002D, U+002E, U+0030-0039;
+      /* - . 0-9 */
+    }
+
     :root {
       --bg: #ffffff;
       --text: #111111;
@@ -180,7 +192,9 @@
     .service-row {
       display: flex;
       gap: 18px;
-      padding: 14px 20px 20px;
+      padding-left: 5px;
+      padding-top: 20px;
+      padding-bottom: 20px;
       flex-wrap: wrap;
     }
 
@@ -220,7 +234,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 20px;
+      padding-left: 15px;
+      padding-top: 20px;
+      padding-bottom: 20px;
       border-bottom: 1px solid var(--line);
       text-decoration: none;
       color: #576b95;
